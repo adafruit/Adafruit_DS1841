@@ -37,12 +37,6 @@
 
 #include "Adafruit_DS1841.h"
 
-/**
- * @brief Construct a new Adafruit_DS1841::Adafruit_DS1841 object
- *
- */
-Adafruit_DS1841::Adafruit_DS1841(void) {}
-
 /*!
  *    @brief  Sets up the hardware and initializes I2C
  *    @param  i2c_address
@@ -75,15 +69,26 @@ bool Adafruit_DS1841::_init(void) {
 
   // self._eeprom_shadow_bit = True # turn off eeprom updates to IV
 
-  Adafruit_BusIO_Register config_1 = Adafruit_BusIO_Register(i2c_dev, DS1841_CR1, 1);
-  Adafruit_BusIO_Register config_2 = Adafruit_BusIO_Register(i2c_dev, DS1841_CR2, 1);
+  Adafruit_BusIO_Register config_0 = Adafruit_BusIO_Register(i2c_dev, DS1841_CR0, 1);
+  Adafruit_BusIO_RegisterBits eeprom_shadow = Adafruit_BusIO_RegisterBits(&config_0, 1, 7);
 
-  config_1.write(0x2); // Addr mod=False, Update mode = True
-  config_2.write(0x6); // LUTAR mode = manual, Wiper Access = manual/i2c
+  Adafruit_BusIO_Register config_1 = Adafruit_BusIO_Register(i2c_dev, DS1841_CR1, 1);
+  Adafruit_BusIO_RegisterBits update_mode = Adafruit_BusIO_RegisterBits(&config_1, 1, 0);
+  Adafruit_BusIO_RegisterBits adder_mode = Adafruit_BusIO_RegisterBits(&config_1, 1, 1);
+
+  Adafruit_BusIO_Register config_2 = Adafruit_BusIO_Register(i2c_dev, DS1841_CR2, 1);
+  Adafruit_BusIO_RegisterBits lutar_mode = Adafruit_BusIO_RegisterBits(&config_2, 1, 1);
+  Adafruit_BusIO_RegisterBits wiper_access = Adafruit_BusIO_RegisterBits(&config_2, 1, 2);
+
+  eeprom_shadow.write(1);
+  update_mode.write(1);
+  adder_mode.write(0);
+
+  lutar_mode.write(1);
+  wiper_access.write(1);
+
   return true;
 }
-
-// _voltage_register = UnaryStruct(_DS1841_VOLTAGE, ">B")
 
 /**
  * @brief Gets the current wiper value

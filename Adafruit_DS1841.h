@@ -32,10 +32,8 @@
 #define DS1841_VOLTAGE 0x0E
 // DS1841_LUT 0x80–C7h
 
-#define DS1841_VCC_LSB = 25.6
-#define DS1841_I2CADDR_DEFAULT = 0x28 // up to 0x2B
-
-class Adafruit_DS1841;
+#define DS1841_VCC_LSB 25.6
+#define DS1841_I2CADDR_DEFAULT 0x28 // up to 0x2B
 
 /*!
  *    @brief  Class that stores state and functions for interacting with
