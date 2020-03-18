@@ -19,8 +19,13 @@ void setup(void) {
 }
 
 void loop() {
-
+  ds.setWiper(10);
+  delay(5000);
   Serial.print("Temperature: ");Serial.print(ds.getTemperature());Serial.println(" degrees C");
+  Serial.print("Wiper: ");Serial.print(ds.getWiper());Serial.println(" LSB");
+  ds.setWiper(120);
+  delay(5000);
+  Serial.print("Temperature: ");Serial.print(ds.getTemperature());Serial.println(" degrees C");
+  Serial.print("Wiper: ");Serial.print(ds.getWiper());Serial.println(" LSB");
   Serial.println("");
-  delay(100);
 }
