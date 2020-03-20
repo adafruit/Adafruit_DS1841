@@ -30,7 +30,7 @@
 #define DS1841_CR2 0x0A     ///< Sets Wiper access and LUTAR mode
 #define DS1841_TEMP 0x0C    ///< Temperature; Requires Update Mode = True
 #define DS1841_VOLTAGE 0x0E ///< VCC voltage; requires Update Mode=True
-// DS1841_LUT 0x80–C7h
+#define DS1841_LUT 0x80     ///<LUT offset, up to 0xC7
 
 #define DS1841_VCC_LSB_TO_MA 25.6   ///< LSB Value for Voltage in mA
 #define DS1841_I2CADDR_DEFAULT 0x28 ///< LUT Address offset, up to 0x2B
@@ -44,9 +44,13 @@ public:
   bool begin(uint8_t i2c_addr = DS1841_I2CADDR_DEFAULT, TwoWire *wire = &Wire);
 
   int8_t getTemperature(void);
+  float getVoltage(void);
   uint8_t getWiper(void);
   bool setWiper(uint8_t new_wiper_value);
-  // void setWiperDefault(uint8_t new_wiper_default);
+  void setWiperDefault(uint8_t new_wiper_default);
+  void enableSaveToEEPROM(bool enable_eeprom);
+  void enableUpdateMode(bool enable_update);
+  void enableAdderMode(bool enable_adder_mode);
 
 private:
   bool _init(void);

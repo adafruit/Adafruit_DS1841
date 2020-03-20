@@ -63,16 +63,6 @@ bool Adafruit_DS1841::begin(uint8_t i2c_address, TwoWire *wire) {
  */
 bool Adafruit_DS1841::_init(void) {
 
-  // make sure we're talking to the right chip
-  // still need to find a way to verify
-
-  // self._eeprom_shadow_bit = True # turn off eeprom updates to IV
-
-  Adafruit_BusIO_Register config_0 =
-      Adafruit_BusIO_Register(i2c_dev, DS1841_CR0, 1);
-  Adafruit_BusIO_RegisterBits eeprom_shadow =
-      Adafruit_BusIO_RegisterBits(&config_0, 1, 7);
-
   Adafruit_BusIO_Register config_1 =
       Adafruit_BusIO_Register(i2c_dev, DS1841_CR1, 1);
   Adafruit_BusIO_RegisterBits update_mode =
@@ -87,8 +77,41 @@ bool Adafruit_DS1841::_init(void) {
   Adafruit_BusIO_RegisterBits wiper_access =
       Adafruit_BusIO_RegisterBits(&config_2, 1, 2);
 
-  eeprom_shadow.write(1);
-  update_mode.write(1);
+  // WRITE:0x2
+  // READ:0x80
+  // WRITE:0x2	0x80
+  // WRITE:0x3
+  // READ:0x1
+  // WRITE:0x3	0x1
+  // WRITE:0x3
+  // READ:0x1
+  // WRITE:0x3	0x1
+  // WRITE:0xA
+  // READ:0x6
+  // WRITE:0xA	0x6
+  // WRITE:0xA
+  // READ:0x6
+  // WRITE:0xA	0x6
+
+  // WRITE:0x2
+  // READ:0x80
+  // WRITE:0x2	0x80
+  // WRITE:0x3
+  // READ:0x0
+  // WRITE:0x3	0x0
+  // WRITE:0x3
+  // READ:0x0
+  // WRITE:0x3	0x0
+  // WRITE:0xA
+  // READ:0x6
+  // WRITE:0xA	0x6
+  // WRITE:0xA
+  // READ:0x6
+  // WRITE:0xA	0x6
+
+  enableSaveToEEPROM(false);
+  enableUpdateMode(true);
+  // update_mode.write(1);
   adder_mode.write(0);
 
   lutar_mode.write(1);
@@ -137,4 +160,84 @@ int8_t Adafruit_DS1841::getTemperature(void) {
       Adafruit_BusIO_Register(i2c_dev, DS1841_TEMP, 1);
 
   return (int8_t)temperature_register.read();
+}
+
+/**
+ * @brief Gets the current temperature
+ *
+ * @return int8_t The current voltage between VCC and GND in mV
+ */
+float Adafruit_DS1841::getVoltage(void) {
+
+  Adafruit_BusIO_Register voltage_register =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_VOLTAGE, 1);
+
+  return voltage_register.read() * DS1841_VCC_LSB_TO_MA;
+}
+/**
+ * @brief Sets the default Wiper value loaded on boot
+ *
+ * @param wiper_default The current voltage between VCC and GND in mV
+ */
+void Adafruit_DS1841::setWiperDefault(uint8_t new_wiper_default) {
+  if ((new_wiper_default > 127) || (new_wiper_default < 0)) {
+    return false;
+  }
+
+  Adafruit_BusIO_Register voltage_register =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_VOLTAGE, 1);
+
+
+        // self._disable_save_to_eeprom = False
+        // # allows for IV to pass through to WR.
+        // # this setting is also saved to EEPROM so IV will load into WR on boot
+        // // self._update_mode = False
+        // sleep(0.2)
+        // self._initial_value_register = value
+        // sleep(0.2)
+        // self._disable_save_to_eeprom = True
+        // # Turn update mode back on so temp and voltage update
+        // # and LUT usage works
+        // self._update_mode = True
+
+
+
+  return voltage_register.read() * DS1841_VCC_LSB_TO_MA;
+}
+
+void Adafruit_DS1841::enableSaveToEEPROM(bool enable_eeprom){
+
+  Adafruit_BusIO_Register config_0 =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_CR0, 1);
+  Adafruit_BusIO_RegisterBits disable_eeprom_writes =
+    Adafruit_BusIO_RegisterBits(&config_0, 1, 7);
+
+  disable_eeprom_writes.write(!enable_eeprom);
+
+}
+
+//TODO: CHECK POLARITY FOR NAMING
+void Adafruit_DS1841::enableUpdateMode(bool enable_update){
+
+  Adafruit_BusIO_Register config_1 =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_CR1, 1);
+
+  Adafruit_BusIO_RegisterBits update_mode =
+      Adafruit_BusIO_RegisterBits(&config_1, 1, 0);
+
+  update_mode.write(enable_update);
+
+}
+
+//TODO: CHECK POLARITY FOR NAMING
+void Adafruit_DS1841::enableAdderMode(bool enable_adder_mode){
+
+  Adafruit_BusIO_Register config_1 =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_CR1, 1);
+
+  Adafruit_BusIO_RegisterBits adder_mode =
+      Adafruit_BusIO_RegisterBits(&config_1, 1, 1);
+
+  adder_mode.write(enable_adder_mode);
+
 }
