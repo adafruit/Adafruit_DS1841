@@ -1,9 +1,11 @@
-#Adafruit DS1841 [![Build Status](https://github.com/adafruit/Adafruit_DS1841/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/Adafruit_DS1841/actions)
+# Adafruit DS1841 [![Build Status](https://github.com/adafruit/Adafruit_DS1841/workflows/Arduino%20Library%20CI/badge.svg)](https://github.com/adafruit/Adafruit_DS1841/actions)
 
 This is the Adafruit DS1841 I2C Logorithmic Resistor for Arduino
 
 Tested and works great with the Adafruit DS1841 Breakout Board
-[<img src="assets/board.png?raw=true" width="500px">](https://www.adafruit.com/products/45XX)
+
+[<img src="assets/board.png?raw=true" width="500px">](https://www.adafruit.com/products/4570)
+
 This chip uses I2C to communicate, 2 pins are required to interface
 
 Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!
