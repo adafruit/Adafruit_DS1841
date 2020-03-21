@@ -131,30 +131,33 @@ float Adafruit_DS1841::getVoltage(void) {
  *
  * @param wiper_default The current voltage between VCC and GND in mV
  */
-void Adafruit_DS1841::setWiperDefault(uint8_t new_wiper_default) {
+bool Adafruit_DS1841::setWiperDefault(uint8_t new_wiper_default) {
   if ((new_wiper_default > 127) || (new_wiper_default < 0)) {
     return false;
   }
 
-  Adafruit_BusIO_Register voltage_register =
-      Adafruit_BusIO_Register(i2c_dev, DS1841_VOLTAGE, 1);
+  Adafruit_BusIO_Register initial_value =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_IVR, 1);
 
+  // self._disable_save_to_eeprom = False
+  enableSaveToEEPROM(true);
 
-        // self._disable_save_to_eeprom = False
-        // # allows for IV to pass through to WR.
-        // # this setting is also saved to EEPROM so IV will load into WR on boot
-        // // self._update_mode = False
-        // sleep(0.2)
-        // self._initial_value_register = value
-        // sleep(0.2)
-        // self._disable_save_to_eeprom = True
-        // # Turn update mode back on so temp and voltage update
-        // # and LUT usage works
-        // self._update_mode = True
+  // # allows for IV to pass through to WR.
+  // # this setting is also saved to EEPROM so IV will load into WR on boot
+  // // self._update_mode = False
+  enableUpdateMode(false);
+  delay(20);
 
+  // self._initial_value_register = value
+  initial_value.write(new_wiper_default);
+  delay(20);
 
+  // self._disable_save_to_eeprom = True
+  enableSaveToEEPROM(false);
 
-  return voltage_register.read() * DS1841_VCC_LSB_TO_MA;
+  // # Turn update mode back on so temp and voltage update
+  // # and LUT usage works
+  enableUpdateMode(true);
 }
 
 void Adafruit_DS1841::enableSaveToEEPROM(bool enable_eeprom){

@@ -47,7 +47,8 @@ public:
   float getVoltage(void);
   uint8_t getWiper(void);
   bool setWiper(uint8_t new_wiper_value);
-  void setWiperDefault(uint8_t new_wiper_default);
+  bool setWiperDefault(uint8_t new_wiper_default);
+
   void enableSaveToEEPROM(bool enable_eeprom);
   void enableUpdateMode(bool enable_update);
   void enableAdderMode(bool enable_adder_mode);
