@@ -51,6 +51,8 @@ public:
   void enableSaveToEEPROM(bool enable_eeprom);
   void enableUpdateMode(bool enable_update);
   void enableAdderMode(bool enable_adder_mode);
+  void enableManualWiper(bool manual_wiper);
+  void enableManualLUTAddr(bool manual_lut_addr);
 
 private:
   bool _init(void);

@@ -63,59 +63,11 @@ bool Adafruit_DS1841::begin(uint8_t i2c_address, TwoWire *wire) {
  */
 bool Adafruit_DS1841::_init(void) {
 
-  Adafruit_BusIO_Register config_1 =
-      Adafruit_BusIO_Register(i2c_dev, DS1841_CR1, 1);
-  Adafruit_BusIO_RegisterBits update_mode =
-      Adafruit_BusIO_RegisterBits(&config_1, 1, 0);
-  Adafruit_BusIO_RegisterBits adder_mode =
-      Adafruit_BusIO_RegisterBits(&config_1, 1, 1);
-
-  Adafruit_BusIO_Register config_2 =
-      Adafruit_BusIO_Register(i2c_dev, DS1841_CR2, 1);
-  Adafruit_BusIO_RegisterBits lutar_mode =
-      Adafruit_BusIO_RegisterBits(&config_2, 1, 1);
-  Adafruit_BusIO_RegisterBits wiper_access =
-      Adafruit_BusIO_RegisterBits(&config_2, 1, 2);
-
-  // WRITE:0x2
-  // READ:0x80
-  // WRITE:0x2	0x80
-  // WRITE:0x3
-  // READ:0x1
-  // WRITE:0x3	0x1
-  // WRITE:0x3
-  // READ:0x1
-  // WRITE:0x3	0x1
-  // WRITE:0xA
-  // READ:0x6
-  // WRITE:0xA	0x6
-  // WRITE:0xA
-  // READ:0x6
-  // WRITE:0xA	0x6
-
-  // WRITE:0x2
-  // READ:0x80
-  // WRITE:0x2	0x80
-  // WRITE:0x3
-  // READ:0x0
-  // WRITE:0x3	0x0
-  // WRITE:0x3
-  // READ:0x0
-  // WRITE:0x3	0x0
-  // WRITE:0xA
-  // READ:0x6
-  // WRITE:0xA	0x6
-  // WRITE:0xA
-  // READ:0x6
-  // WRITE:0xA	0x6
-
   enableSaveToEEPROM(false);
   enableUpdateMode(true);
-  // update_mode.write(1);
-  adder_mode.write(0);
-
-  lutar_mode.write(1);
-  wiper_access.write(1);
+  enableAdderMode(false);
+  enableManualLUTAddr(true);
+  enableManualWiper(true);
 
   return true;
 }
@@ -240,4 +192,28 @@ void Adafruit_DS1841::enableAdderMode(bool enable_adder_mode){
 
   adder_mode.write(enable_adder_mode);
 
+}
+
+
+//TODO: CHECK POLARITY FOR NAMING
+void Adafruit_DS1841::enableManualLUTAddr(bool manual_lut_addr){
+
+  Adafruit_BusIO_Register config_2 =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_CR2, 1);
+  Adafruit_BusIO_RegisterBits lutar_mode =
+      Adafruit_BusIO_RegisterBits(&config_2, 1, 1);
+
+  lutar_mode.write(manual_lut_addr);
+
+}
+
+//TODO: CHECK POLARITY FOR NAMING
+void Adafruit_DS1841::enableManualWiper(bool manual_wiper){
+
+  Adafruit_BusIO_Register config_2 =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_CR2, 1);
+  Adafruit_BusIO_RegisterBits wiper_access =
+      Adafruit_BusIO_RegisterBits(&config_2, 1, 2);
+
+  wiper_access.write(manual_wiper);
 }
