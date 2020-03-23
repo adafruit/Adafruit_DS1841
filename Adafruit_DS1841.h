@@ -30,7 +30,7 @@
 #define DS1841_CR2 0x0A     ///< Sets Wiper access and LUTAR mode
 #define DS1841_TEMP 0x0C    ///< Temperature; Requires Update Mode = True
 #define DS1841_VOLTAGE 0x0E ///< VCC voltage; requires Update Mode=True
-#define DS1841_LUT 0x80     ///<LUT offset, up to 0xC7
+#define DS1841_LUT 0x80     ///< LUT offset, up to 0xC7
 
 #define DS1841_VCC_LSB_TO_MA 25.6   ///< LSB Value for Voltage in mA
 #define DS1841_I2CADDR_DEFAULT 0x28 ///< LUT Address offset, up to 0x2B
