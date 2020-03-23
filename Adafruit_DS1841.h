@@ -48,12 +48,17 @@ public:
   uint8_t getWiper(void);
   bool setWiper(uint8_t new_wiper_value);
   bool setWiperDefault(uint8_t new_wiper_default);
+  uint8_t getLUT(uint8_t index);
+  bool setLUT(uint8_t index, uint8_t value);
+  uint8_t getLUTSelection(void);
+  bool setLUTSelection(uint8_t lut_index);
 
   void enableSaveToEEPROM(bool enable_eeprom);
   void enableUpdateMode(bool enable_update);
   void enableAdderMode(bool enable_adder_mode);
   void enableManualWiper(bool manual_wiper);
   void enableManualLUTAddr(bool manual_lut_addr);
+  void enableLUTMode(bool enable_lut_mode);
 
 private:
   bool _init(void);

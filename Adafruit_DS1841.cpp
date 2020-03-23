@@ -64,10 +64,10 @@ bool Adafruit_DS1841::begin(uint8_t i2c_address, TwoWire *wire) {
 bool Adafruit_DS1841::_init(void) {
 
   enableSaveToEEPROM(false);
-  enableUpdateMode(true);
   enableAdderMode(false);
   enableManualLUTAddr(true);
   enableManualWiper(true);
+  enableUpdateMode(true);
 
   return true;
 }
@@ -197,7 +197,6 @@ void Adafruit_DS1841::enableAdderMode(bool enable_adder_mode){
 
 }
 
-
 //TODO: CHECK POLARITY FOR NAMING
 void Adafruit_DS1841::enableManualLUTAddr(bool manual_lut_addr){
 
@@ -219,4 +218,73 @@ void Adafruit_DS1841::enableManualWiper(bool manual_wiper){
       Adafruit_BusIO_RegisterBits(&config_2, 1, 2);
 
   wiper_access.write(manual_wiper);
+}
+
+void Adafruit_DS1841::enableLUTMode(bool enable_lut_mode){
+  enableManualLUTAddr(enable_lut_mode);
+  enableUpdateMode(true);
+  enableManualWiper(!enable_lut_mode);
+}
+
+/**
+ * @brief Gets the currently selected offset into the LUT
+ *
+ * @return uint8_t The index of the selected LUT entry
+ */
+uint8_t Adafruit_DS1841::getLUTSelection(void){
+
+  Adafruit_BusIO_Register lut_selection =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_LUTAR, 1);
+  return lut_selection.read()-DS1841_LUT;
+}
+
+/**
+ * @brief
+ *
+ * @param lut_value The 0-based offset into the LUT to select for use
+ * @return true on success
+ * @return false if lut_index is out of range
+ */
+
+bool Adafruit_DS1841::setLUTSelection(uint8_t lut_index) {
+  if ((lut_index > 71) || (lut_index < 0)) {
+    return false;
+  }
+  Adafruit_BusIO_Register lut_selection =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_LUTAR, 1);
+
+  lut_selection.write(lut_index+DS1841_LUT);
+  return true;
+}
+
+///////////////////// LUT ACCESS //////////////////////////
+/**
+ * @brief Gets the value for the LUT entry at the given index
+ *
+ * @return uint8_t The current 7-bit wiper value
+ */
+uint8_t Adafruit_DS1841::getLUT(uint8_t index){
+
+  Adafruit_BusIO_Register lut_entry =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_LUT+index, 1);
+  return lut_entry.read();
+}
+
+/**
+ * @brief
+ *
+ * @param lut_value The 7-bit number to set LUT entry to
+ * @return true on success
+ * @return false if lut_value is out of range
+ */
+bool Adafruit_DS1841::setLUT(uint8_t index, uint8_t lut_value) {
+  if ((lut_value > 127) || (lut_value < 0)) {
+    return false;
+  }
+  Adafruit_BusIO_Register lut_entry =
+      Adafruit_BusIO_Register(i2c_dev, DS1841_LUT+index, 1);
+
+  lut_entry.write(lut_value);
+  delay(20);
+  return true;
 }
