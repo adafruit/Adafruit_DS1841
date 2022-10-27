@@ -91,7 +91,7 @@ uint8_t Adafruit_DS1841::getWiper(void) {
  * @return false if wiper_value is out of range
  */
 bool Adafruit_DS1841::setWiper(uint8_t wiper_value) {
-  if ((wiper_value > 127) || (wiper_value < 0)) {
+  if (wiper_value > 127) {
     return false;
   }
   Adafruit_BusIO_Register wiper_register =
@@ -135,7 +135,7 @@ float Adafruit_DS1841::getVoltage(void) {
  * @return false The new value was out of range
  */
 bool Adafruit_DS1841::setWiperDefault(uint8_t new_wiper_default) {
-  if ((new_wiper_default > 127) || (new_wiper_default < 0)) {
+  if (new_wiper_default > 127) {
     return false;
   }
 
@@ -161,6 +161,8 @@ bool Adafruit_DS1841::setWiperDefault(uint8_t new_wiper_default) {
   // # Turn update mode back on so temp and voltage update
   // # and LUT usage works
   enableUpdateMode(true);
+
+  return true;
 }
 
 /**
@@ -281,7 +283,7 @@ uint8_t Adafruit_DS1841::getLUTSelection(void) {
  */
 
 bool Adafruit_DS1841::setLUTSelection(uint8_t lut_index) {
-  if ((lut_index > 71) || (lut_index < 0)) {
+  if (lut_index > 71) {
     return false;
   }
   Adafruit_BusIO_Register lut_selection =
@@ -313,7 +315,7 @@ uint8_t Adafruit_DS1841::getLUT(uint8_t index) {
  * @return false if lut_value is out of range
  */
 bool Adafruit_DS1841::setLUT(uint8_t index, uint8_t lut_value) {
-  if ((lut_value > 127) || (lut_value < 0)) {
+  if (lut_value > 127) {
     return false;
   }
   Adafruit_BusIO_Register lut_entry =

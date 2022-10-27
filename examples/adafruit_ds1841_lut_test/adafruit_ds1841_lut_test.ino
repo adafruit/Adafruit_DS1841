@@ -18,7 +18,6 @@ void setup(void) {
     while (1) { delay(10); }
   }
   uint8_t temp_i = 0;
-  float temp_f = 0.0;
 
   Serial.println("DS1841 Found!");
   pinMode(VOLTAGE_DIV_PIN, INPUT);
